@@ -1044,6 +1044,7 @@ export class Socket {
   }
 }
 
+window.PhxSocket = Socket
 
 export class LongPoll {
 
