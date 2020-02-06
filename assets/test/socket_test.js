@@ -270,6 +270,31 @@ describe("with transports", done =>{
       assert.equal(socket.conn, null)
     })
 
+    it("removes and adds back existing connection", () => {
+      socket.connect()
+      assert.ok(socket.conn)
+
+      socket.disconnect()
+      assert.equal(socket.conn, null)
+
+      socket.connect()
+      assert.ok(socket.conn)
+    })
+
+    it("sets channels to error state after disconnect", (done) => {
+      socket.connect()
+
+      const channel = socket.channel("topic", {one: "two"})
+      channel.join().trigger("ok", {})
+      assert.equal(channel.state, "joined")
+
+      socket.disconnect()
+      setTimeout(() => {
+        assert.equal(channel.state, "errored")
+        done();
+      }, 50)
+    });
+
     it("calls callback", () => {
       let count = 0
       socket.connect()
